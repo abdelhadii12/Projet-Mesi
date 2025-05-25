@@ -1,0 +1,35 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  line-height: 1.2;
+}
+
+.hero img {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.voiture-item {
+  transition: all 0.3s ease;
+}
+
+.voiture-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 20px rgba(0, 0, 0, 0.15);
+}
+
+footer p {
+  font-size: 0.875rem;
+}
+
+#menu-button svg {
+  transition: transform 0.3s ease;
+}
+
+#menu-button:hover svg {
+  transform: rotate(90deg);
+}
+
+

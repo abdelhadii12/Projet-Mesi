@@ -1,0 +1,36 @@
+.voiture-card {
+  max-width: 500px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.voiture-image {
+  height: 300px;
+  object-fit: cover;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-text {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.list-group-item {
+  font-size: 0.9rem;
+}
+
+button.btn {
+  font-size: 1rem;
+  transition: all 0.3s ease-in-out;
+}
+
+button.btn:hover {
+  transform: scale(1.05);
+}

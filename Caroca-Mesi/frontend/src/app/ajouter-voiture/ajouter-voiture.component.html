@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposer une Voiture</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .form-container {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-group input[type="file"] {
+      padding: 5px;
+      border: 1px dashed #ccc;
+      background-color: #f9f9f9;
+    }
+
+    .form-group input.ng-invalid.ng-touched,
+    .form-group textarea.ng-invalid.ng-touched,
+    .form-group select.ng-invalid.ng-touched {
+      border-color: #ff4444;
+    }
+
+    .error-message {
+      color: #ff4444;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .bouton-Proposer {
+      background: #5E5DF0;
+      border-radius: 999px;
+      box-shadow: #5E5DF0 0 10px 20px -10px;
+      box-sizing: border-box;
+      color: #FFFFFF;
+      cursor: pointer;
+      font-family: Inter,Helvetica,"Apple Color Emoji","Segoe UI Emoji",NotoColorEmoji,"Noto Color Emoji","Segoe UI Symbol","Android Emoji",EmojiSymbols,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans",sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      opacity: 1;
+      outline: 0 solid transparent;
+      padding: 8px 18px;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      width: fit-content;
+      word-break: break-word;
+      border: 0;
+      display: block;
+      margin: 20px auto;
+    }
+
+    .bouton-Proposer:hover {
+      background-color: #4d4bd1;
+    }
+
+    .bouton-Proposer:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .message.success {
+      color: #00C851;
+    }
+
+    .message.error {
+      color: #ff4444;
+    }
+
+    .image-preview {
+      margin-top: 10px;
+      max-width: 200px;
+      max-height: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h1>Proposer une Voiture</h1>
+    <form [formGroup]="voitureForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="marque">Marque</label>
+        <input type="text" id="marque" formControlName="marque" required>
+        <div class="error-message" *ngIf="voitureForm.get('marque')?.invalid && voitureForm.get('marque')?.touched">
+          La marque est requise
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="modele">Modèle</label>
+        <input type="text" id="modele" formControlName="modele" required>
+        <div class="error-message" *ngIf="voitureForm.get('modele')?.invalid && voitureForm.get('modele')?.touched">
+          Le modèle est requis
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="annee">Année</label>
+        <input type="number" id="annee" formControlName="annee" required>
+        <div class="error-message" *ngIf="voitureForm.get('annee')?.invalid && voitureForm.get('annee')?.touched">
+          L'année doit être entre 1900 et {{currentYear}}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="prix">Prix (€)</label>
+        <input type="number" id="prix" formControlName="prix" required>
+        <div class="error-message" *ngIf="voitureForm.get('prix')?.invalid && voitureForm.get('prix')?.touched">
+          Le prix doit être supérieur à 0
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="couleur">Couleur</label>
+        <input type="text" id="couleur" formControlName="couleur" required>
+        <div class="error-message" *ngIf="voitureForm.get('couleur')?.invalid && voitureForm.get('couleur')?.touched">
+          La couleur est requise
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="kilometrage">Kilométrage</label>
+        <input type="number" id="kilometrage" formControlName="kilometrage" required>
+        <div class="error-message" *ngIf="voitureForm.get('kilometrage')?.invalid && voitureForm.get('kilometrage')?.touched">
+          Le kilométrage doit être supérieur à 0
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="typeCarbu">Type de carburant</label>
+        <select id="typeCarbu" formControlName="typeCarbu" required>
+          <option value="">Sélectionnez un type</option>
+          <option value="ESSENCE">Essence</option>
+          <option value="DIESEL">Diesel</option>
+          <option value="ELECTRIQUE">Électrique</option>
+          <option value="HYBRIDE">Hybride</option>
+        </select>
+        <div class="error-message" *ngIf="voitureForm.get('typeCarbu')?.invalid && voitureForm.get('typeCarbu')?.touched">
+          Le type de carburant est requis
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="trans">Transmission</label>
+        <select id="trans" formControlName="trans" required>
+          <option value="">Sélectionnez une transmission</option>
+          <option value="MANUELLE">Manuelle</option>
+          <option value="AUTOMATIQUE">Automatique</option>
+        </select>
+        <div class="error-message" *ngIf="voitureForm.get('trans')?.invalid && voitureForm.get('trans')?.touched">
+          La transmission est requise
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" required></textarea>
+        <div class="error-message" *ngIf="voitureForm.get('description')?.invalid && voitureForm.get('description')?.touched">
+          La description est requise
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="images">Images (1 à 3):</label>
+        <input type="file" id="images" (change)="onFilesSelected($event)" multiple accept="image/*" />
+      </div>
+
+      <div *ngFor="let img of imagePreviews">
+        <img [src]="img" style="max-width: 100px; margin: 5px;" />
+      </div>
+
+      <button class="bouton-Proposer" type="submit" [disabled]="voitureForm.invalid">
+        Proposer la voiture
+      </button>
+      <div *ngIf="message" class="message" [ngClass]="{'success': message.includes('succès'), 'error': message.includes('Erreur')}">
+        {{ message }}
+      </div>
+    </form>
+  </div>
+</body>
+</html>

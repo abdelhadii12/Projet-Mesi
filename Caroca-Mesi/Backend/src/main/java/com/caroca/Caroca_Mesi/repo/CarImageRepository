@@ -1,0 +1,6 @@
+package com.caroca.Caroca_Mesi.repo;
+
+import com.caroca.Caroca_Mesi.Model.CarImage;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CarImageRepository extends JpaRepository<CarImage, Long> {}
