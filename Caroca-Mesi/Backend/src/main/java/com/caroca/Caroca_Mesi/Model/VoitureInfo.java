@@ -64,7 +64,7 @@ public class VoitureInfo implements Serializable {
         return prix;
     }
 
-    public String getCouleur() {
+    public String getCouleur() {    
         return couleur;
     }
 
