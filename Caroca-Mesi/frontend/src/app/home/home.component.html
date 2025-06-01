@@ -242,6 +242,30 @@
       <div
         class="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4"
         > 
+        <!-- Loading state -->
+        <div *ngIf="!voitures && !error" class="col-span-full text-center py-8">
+          <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+            <span class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
+          </div>
+          <p class="mt-2 text-gray-600">Chargement des voitures...</p>
+        </div>
+
+        <!-- Error state -->
+        <div *ngIf="error" class="col-span-full text-center py-8">
+          <div class="text-red-600 mb-2">
+            <svg class="inline-block h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <p class="text-red-600">{{ error }}</p>
+        </div>
+
+        <!-- No cars state -->
+        <div *ngIf="voitures && voitures.length === 0" class="col-span-full text-center py-8">
+          <p class="text-gray-600">Aucune voiture disponible pour le moment.</p>
+        </div>
+
+        <!-- Cars grid -->
         <div
           *ngFor="let voiture of voitures"
           class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
@@ -250,11 +274,15 @@
             
             <a [routerLink]="['/voiture-detail', voiture.id]">
               <img
-  *ngIf="voiture.images && voiture.images.length"
-  [src]="'data:' + voiture.images[0].contentType + ';base64,' + voiture.images[0].data"
-  alt="{{ voiture.marque }}"
-  class="rounded-t-lg md:rounded-l-lg md:rounded-r-none h-24 md:h-auto w-full md:w-auto object-cover"
-/>
+                *ngIf="voiture.images && voiture.images.length > 0"
+                [src]="'data:' + voiture.images[0].contentType + ';base64,' + voiture.images[0].data"
+                alt="{{ voiture.marque }}"
+                class="rounded-t-lg md:rounded-l-lg md:rounded-r-none h-24 md:h-auto w-full md:w-auto object-cover"
+              />
+              <div *ngIf="!voiture.images || voiture.images.length === 0" 
+                   class="rounded-t-lg md:rounded-l-lg md:rounded-r-none h-24 md:h-auto w-full md:w-auto bg-gray-200 flex items-center justify-center">
+                <span class="text-gray-500">No image available</span>
+              </div>
             </a>
           </div>
           <div class="pt-6">

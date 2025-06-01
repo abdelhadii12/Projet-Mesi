@@ -5,12 +5,16 @@ import com.caroca.Caroca_Mesi.Model.VoitureDTO;
 import com.caroca.Caroca_Mesi.Model.VoitureInfo;
 import com.caroca.Caroca_Mesi.Model.CarImage;
 import com.caroca.Caroca_Mesi.repo.VoitureRepo;
+import com.caroca.Caroca_Mesi.Model.dto.CarImageResponseDTO;
+import com.caroca.Caroca_Mesi.Model.dto.VoitureInfoResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Base64;
+import java.util.stream.Collectors;
 
 @Service
 public class VoitureService {
@@ -45,8 +49,34 @@ public class VoitureService {
         return voitureRepo.save(voitureInfo);
     }
 
-    public List<VoitureInfo> FindAllVoiture() {
-        return voitureRepo.findAll();
+    public List<VoitureInfoResponseDTO> FindAllVoiture() {
+        List<VoitureInfo> voitureInfos = voitureRepo.findAll();
+        return voitureInfos.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    private VoitureInfoResponseDTO convertToDto(VoitureInfo voitureInfo) {
+        List<CarImageResponseDTO> imageDTOs = null;
+        if (voitureInfo.getImages() != null) {
+            imageDTOs = voitureInfo.getImages().stream()
+                    .map(image -> new CarImageResponseDTO(Base64.getEncoder().encodeToString(image.getData()), image.getContentType()))
+                    .collect(Collectors.toList());
+        }
+
+        return new VoitureInfoResponseDTO(
+                voitureInfo.getId(),
+                voitureInfo.getMarque(),
+                voitureInfo.getModele(),
+                voitureInfo.getAnnee(),
+                voitureInfo.getPrix(),
+                voitureInfo.getCouleur(),
+                voitureInfo.getKilometrage(),
+                voitureInfo.getTypeCarbu(),
+                voitureInfo.getTrans(),
+                voitureInfo.getDescription(),
+                imageDTOs
+        );
     }
 
     public VoitureInfo updateVoiture(VoitureDTO voitureDTO) throws IOException {

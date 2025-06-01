@@ -14,6 +14,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Base64;
+import java.util.stream.Collectors;
+
+import com.caroca.Caroca_Mesi.Model.dto.VoitureInfoResponseDTO;
+import com.caroca.Caroca_Mesi.Model.dto.CarImageResponseDTO;
+import com.caroca.Caroca_Mesi.Model.CarImage;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -28,19 +34,20 @@ public class VoitureResource {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<VoitureInfo>> getAllVoitureInfo() {
-        List<VoitureInfo> voitureInfos = voitureService.FindAllVoiture();
+    public ResponseEntity<List<VoitureInfoResponseDTO>> getAllVoitureInfo() {
+        List<VoitureInfoResponseDTO> voitureInfos = voitureService.FindAllVoiture();
         return new ResponseEntity<>(voitureInfos, HttpStatus.OK);
     }
 
     @GetMapping("/find/{Id}")
-    public ResponseEntity<VoitureInfo> getVoitureById(@PathVariable("Id") Long Id) {
-        VoitureInfo voitureInfos = voitureService.findVoitureById(Id);
-        return new ResponseEntity<>(voitureInfos, HttpStatus.OK);
+    public ResponseEntity<VoitureInfoResponseDTO> getVoitureById(@PathVariable("Id") Long Id) {
+        VoitureInfo voitureInfo = voitureService.findVoitureById(Id);
+        VoitureInfoResponseDTO voitureInfoResponseDTO = convertToDto(voitureInfo);
+        return new ResponseEntity<>(voitureInfoResponseDTO, HttpStatus.OK);
     }
 
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<VoitureInfo> addVoiture(
+    public ResponseEntity<VoitureInfoResponseDTO> addVoiture(
             @RequestParam("marque") String marque,
             @RequestParam("modele") String modele,
             @RequestParam("annee") int annee,
@@ -65,11 +72,12 @@ public class VoitureResource {
         voitureDTO.setImages(images);
 
         VoitureInfo newVoiture = voitureService.addVoiture(voitureDTO);
-        return new ResponseEntity<>(newVoiture, HttpStatus.CREATED);
+        VoitureInfoResponseDTO newVoitureResponseDTO = convertToDto(newVoiture);
+        return new ResponseEntity<>(newVoitureResponseDTO, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<VoitureInfo> updateVoiture(
+    public ResponseEntity<VoitureInfoResponseDTO> updateVoiture(
             @RequestParam("id") Long id,
             @RequestParam("marque") String marque,
             @RequestParam("modele") String modele,
@@ -96,7 +104,8 @@ public class VoitureResource {
         voitureDTO.setImages(images);
 
         VoitureInfo updateVoiture = voitureService.updateVoiture(voitureDTO);
-        return new ResponseEntity<>(updateVoiture, HttpStatus.OK);
+        VoitureInfoResponseDTO updateVoitureResponseDTO = convertToDto(updateVoiture);
+        return new ResponseEntity<>(updateVoitureResponseDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -109,6 +118,29 @@ public class VoitureResource {
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not allowed");
         }
+    }
+
+    private VoitureInfoResponseDTO convertToDto(VoitureInfo voitureInfo) {
+        List<CarImageResponseDTO> imageDTOs = null;
+        if (voitureInfo.getImages() != null) {
+            imageDTOs = voitureInfo.getImages().stream()
+                    .map(image -> new CarImageResponseDTO(Base64.getEncoder().encodeToString(image.getData()), image.getContentType()))
+                    .collect(Collectors.toList());
+        }
+
+        return new VoitureInfoResponseDTO(
+                voitureInfo.getId(),
+                voitureInfo.getMarque(),
+                voitureInfo.getModele(),
+                voitureInfo.getAnnee(),
+                voitureInfo.getPrix(),
+                voitureInfo.getCouleur(),
+                voitureInfo.getKilometrage(),
+                voitureInfo.getTypeCarbu(),
+                voitureInfo.getTrans(),
+                voitureInfo.getDescription(),
+                imageDTOs
+        );
     }
 }
 

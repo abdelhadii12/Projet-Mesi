@@ -13,14 +13,28 @@ import { RouterModule } from '@angular/router'; // Importez RouterModule
 })
 export class HomeComponent implements OnInit {
   voitures: any[] = [];
+  error: string | null = null;
 
   constructor(private voitureService: VoitureService, private router: Router) {}
 
   ngOnInit(): void {
-    this.voitureService.getAllVoitures().subscribe((data) => {
-      this.voitures = data;
-
-      console.log(this.voitures);
+    console.log('Fetching voitures...');
+    this.voitureService.getAllVoitures().subscribe({
+      next: (data) => {
+        console.log('Received data:', data);
+        this.voitures = data;
+        if (this.voitures.length === 0) {
+          console.log('No voitures found in the response');
+        } else {
+          console.log(`Found ${this.voitures.length} voitures`);
+          // Log the first voiture to check its structure
+          console.log('First voiture structure:', this.voitures[0]);
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching voitures:', error);
+        this.error = 'Erreur lors du chargement des voitures';
+      }
     });
   }
 

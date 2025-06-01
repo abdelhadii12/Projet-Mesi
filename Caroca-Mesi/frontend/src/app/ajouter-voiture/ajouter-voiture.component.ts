@@ -64,20 +64,34 @@ export class AjouterVoitureComponent {
       });
 
       // Add images if selected
-      
+      if (this.imageFiles.length > 0) {
+        this.imageFiles.forEach((file, index) => {
+          formData.append(`image${index}`, file);
+        });
+      }
 
-      this.imageFiles.forEach(file => formData.append('images', file));
+      // Log the form data for debugging
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
 
       this.voitureService.addVoiture(formData).subscribe({
         next: (response) => {
+          console.log('Response:', response);
           this.message = 'Voiture ajoutée avec succès !';
           setTimeout(() => {
             this.router.navigate(['/']);
           }, 500);
         },
         error: (error) => {
-          this.message = 'Erreur lors de l\'ajout de la voiture.';
-          console.error(error);
+          console.error('Error details:', error);
+          if (error.error instanceof ErrorEvent) {
+            // Client-side error
+            this.message = 'Erreur de connexion au serveur.';
+          } else {
+            // Server-side error
+            this.message = `Erreur lors de l'ajout de la voiture: ${error.status} ${error.statusText}`;
+          }
         }
       });
     } else {
